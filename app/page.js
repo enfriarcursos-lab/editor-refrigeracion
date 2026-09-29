@@ -11,24 +11,24 @@ const library=[
  {kind:'fan',name:'Ventilador',icon:'✣',w:120,h:120}
 ];
 const electricalLibrary=[
- {kind:'image',name:'Motor',icon:'Ⓜ',w:130,h:100,electrical:true},
- {kind:'image',name:'Compresor eléctrico',icon:'C',w:130,h:110,electrical:true},
- {kind:'image',name:'Ventilador eléctrico',icon:'✣',w:130,h:100,electrical:true},
- {kind:'image',name:'Bornera',icon:'▦',w:180,h:80,electrical:true},
- {kind:'image',name:'Capacitor permanente',icon:'▯',w:90,h:120,electrical:true},
- {kind:'image',name:'Capacitor de arranque',icon:'▥',w:90,h:120,electrical:true},
- {kind:'image',name:'Relé de arranque',icon:'R',w:110,h:85,electrical:true},
- {kind:'image',name:'PTC',icon:'PTC',w:105,h:80,electrical:true},
- {kind:'image',name:'Protector térmico',icon:'T',w:110,h:80,electrical:true},
- {kind:'image',name:'Contactor',icon:'K',w:120,h:105,electrical:true},
- {kind:'image',name:'Relé',icon:'R',w:105,h:80,electrical:true},
- {kind:'image',name:'Termostato',icon:'ϑ',w:115,h:85,electrical:true},
+ {kind:'electrical',name:'Motor',icon:'Ⓜ',w:130,h:100,electrical:true},
+ {kind:'electrical',name:'Compresor eléctrico',icon:'C',w:130,h:110,electrical:true},
+ {kind:'electrical',name:'Ventilador eléctrico',icon:'✣',w:130,h:100,electrical:true},
+ {kind:'electrical',name:'Bornera',icon:'▦',w:180,h:80,electrical:true},
+ {kind:'electrical',name:'Capacitor permanente',icon:'▯',w:90,h:120,electrical:true},
+ {kind:'electrical',name:'Capacitor de arranque',icon:'▥',w:90,h:120,electrical:true},
+ {kind:'electrical',name:'Relé de arranque',icon:'R',w:110,h:85,electrical:true},
+ {kind:'electrical',name:'PTC',icon:'PTC',w:105,h:80,electrical:true},
+ {kind:'electrical',name:'Protector térmico',icon:'T',w:110,h:80,electrical:true},
+ {kind:'electrical',name:'Contactor',icon:'K',w:120,h:105,electrical:true},
+ {kind:'electrical',name:'Relé',icon:'R',w:105,h:80,electrical:true},
+ {kind:'electrical',name:'Termostato',icon:'ϑ',w:115,h:85,electrical:true},
  {kind:'switch',name:'Interruptor ON/OFF',icon:'⏻',w:120,h:70,electrical:true,powered:false},
  {kind:'switch',name:'Pulsador marcha',icon:'▶',w:120,h:70,electrical:true,powered:false},
  {kind:'switch',name:'Pulsador parada',icon:'■',w:120,h:70,electrical:true,powered:true},
- {kind:'image',name:'Fusible',icon:'─▭─',w:125,h:60,electrical:true},
- {kind:'image',name:'Alimentación 220 V',icon:'~',w:120,h:75,electrical:true},
- {kind:'image',name:'Tierra',icon:'⏚',w:90,h:75,electrical:true}
+ {kind:'electrical',name:'Fusible',icon:'─▭─',w:125,h:60,electrical:true},
+ {kind:'electrical',name:'Alimentación 220 V',icon:'~',w:120,h:75,electrical:true},
+ {kind:'electrical',name:'Tierra',icon:'⏚',w:90,h:75,electrical:true}
 ];
 export default function Home(){
  const canvasRef=useRef(null),fileRef=useRef(null),libraryFileRef=useRef(null),replaceFileRef=useRef(null),projectRef=useRef(null),brandRef=useRef(null);const [openPanel,setOpenPanel]=useState(null),[recording,setRecording]=useState(false);const recorderRef=useRef(null),recordChunks=useRef([]);const [items,setItems]=useState([]),[pipes,setPipes]=useState([]),[airArrows,setAirArrows]=useState([]),[airColor,setAirColor]=useState('#38bdf8'),[selectedAir,setSelectedAir]=useState([]),[selectedPipe,setSelectedPipe]=useState(null),[tool,setTool]=useState('select'),[selected,setSelected]=useState(null),[color,setColor]=useState('#ef4444'),[width,setWidth]=useState(8),[speed,setSpeed]=useState(1),[playing,setPlaying]=useState(true),[saved,setSaved]=useState(false),[fanDir,setFanDir]=useState(1),[snap,setSnap]=useState(false),[grid,setGrid]=useState(true),[labels,setLabels]=useState(false),[brandImage,setBrandImage]=useState(''),[projectName,setProjectName]=useState('Proyecto 1'),[projects,setProjects]=useState([]),[savedImages,setSavedImages]=useState([]),[sideTab,setSideTab]=useState('refrigeracion'),[settingsOpen,setSettingsOpen]=useState(false);const drag=useRef(null),airDrag=useRef(null),pipeDrag=useRef(null),pipePreview=useRef(null),editing=useRef(false),imageCache=useRef({}),fanPhase=useRef(0),start=useRef(null),moveFrame=useRef(0),pendingMove=useRef(null),flowFrame=useRef(0),history=useRef([]),future=useRef([]),historyLock=useRef(false);
@@ -85,6 +85,7 @@ export default function Home(){
  else if(i.kind==='drier'){ctx.fillStyle='#c08457';ctx.fillRect(8,i.h*.2,i.w-16,i.h*.6);ctx.fillStyle='#a16207';ctx.fillRect(0,i.h*.42,15,8);ctx.fillRect(i.w-15,i.h*.42,15,8)}
  else if(i.kind==='reversingValve'){ctx.strokeStyle='#475569';ctx.lineWidth=5;ctx.fillStyle='#94a3b8';ctx.fillRect(i.w*.22,i.h*.28,i.w*.56,i.h*.38);ctx.strokeRect(i.w*.22,i.h*.28,i.w*.56,i.h*.38);ctx.beginPath();/* 1 vía arriba */ctx.moveTo(i.w*.5,i.h*.28);ctx.lineTo(i.w*.5,5);/* 3 vías abajo */ctx.moveTo(i.w*.32,i.h*.66);ctx.lineTo(i.w*.32,i.h-5);ctx.moveTo(i.w*.5,i.h*.66);ctx.lineTo(i.w*.5,i.h-5);ctx.moveTo(i.w*.68,i.h*.66);ctx.lineTo(i.w*.68,i.h-5);ctx.stroke();ctx.fillStyle='#334155';ctx.beginPath();ctx.arc(i.w*.5,i.h*.47,7,0,Math.PI*2);ctx.fill()} else if(i.kind==='capillary'){ctx.strokeStyle='#b45309';ctx.lineWidth=4;for(let n=0;n<4;n++){ctx.beginPath();ctx.ellipse(i.w/2,i.h/2,18+n*12,10+n*5,0,0,Math.PI*2);ctx.stroke()}}
  else if(i.kind==='valve'){ctx.fillStyle='#d97706';ctx.beginPath();ctx.moveTo(10,i.h/2);ctx.lineTo(i.w/2,12);ctx.lineTo(i.w-10,i.h/2);ctx.lineTo(i.w/2,i.h-12);ctx.closePath();ctx.fill()}
+ else if(i.kind==='electrical'){ctx.fillStyle='#e2e8f0';ctx.strokeStyle='#334155';ctx.lineWidth=3;ctx.fillRect(0,0,i.w,i.h);ctx.strokeRect(0,0,i.w,i.h);ctx.fillStyle='#0f172a';ctx.font='bold 13px Arial';ctx.textAlign='center';ctx.textBaseline='middle';const label=(i.name||'Componente');ctx.fillText(label.length>18?label.slice(0,17)+'…':label,i.w/2,i.h/2);ctx.fillStyle='#f8fafc';ctx.strokeStyle='#0f172a';for(const x of [12,i.w-12]){ctx.beginPath();ctx.arc(x,i.h/2,6,0,Math.PI*2);ctx.fill();ctx.stroke()}}
  else if(i.kind==='switch'){ctx.fillStyle=i.powered?'#22c55e':'#64748b';ctx.strokeStyle='#0f172a';ctx.lineWidth=3;ctx.fillRect(0,0,i.w,i.h);ctx.strokeRect(0,0,i.w,i.h);ctx.fillStyle='#fff';ctx.font='bold 15px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(i.powered?'ON':'OFF',i.w/2,i.h/2)}
  else if(i.kind==='fan'){ctx.fillStyle='#64748b';ctx.beginPath();ctx.arc(i.w/2,i.h/2,10,0,Math.PI*2);ctx.fill();for(let a=0;a<4;a++){ctx.save();ctx.translate(i.w/2,i.h/2);ctx.rotate(a*Math.PI/2+(playing?fanPhase.current*fanDir*(i.fanSpeed??1):0));ctx.beginPath();ctx.ellipse(0,-28,13,30,.25,0,Math.PI*2);ctx.fill();ctx.restore()}}
  else if(i.url&&imgs[i.id]?.complete){if(i.animatedFan&&playing){const fx=(i.fanX??.5)*i.w,fy=(i.fanY??.5)*i.h;ctx.save();ctx.translate(fx,fy);ctx.rotate(fanPhase.current*(i.fanDir??1)*(i.fanSpeed??1));ctx.translate(-fx,-fy);ctx.drawImage(imgs[i.id],0,0,i.w,i.h);ctx.restore()}else ctx.drawImage(imgs[i.id],0,0,i.w,i.h)}
